@@ -14,17 +14,16 @@ class PaginationModel<T> {
     required this.totalPages,
     required this.totalItems,
     required this.pageSize,
-  })  : hasNext = currentPage < totalPages,
-        hasPrevious = currentPage > 1;
+  }) : hasNext = currentPage < totalPages,
+       hasPrevious = currentPage > 1;
 
   factory PaginationModel.fromJson(
     Map<String, dynamic> json,
     T Function(Object? json) fromJsonT,
   ) {
     return PaginationModel<T>(
-      items: (json['items'] as List?)
-              ?.map((item) => fromJsonT(item))
-              .toList() ??
+      items:
+          (json['items'] as List?)?.map((item) => fromJsonT(item)).toList() ??
           [],
       currentPage: json['current_page'] as int? ?? 1,
       totalPages: json['total_pages'] as int? ?? 1,

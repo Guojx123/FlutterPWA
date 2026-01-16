@@ -1,0 +1,20 @@
+# Assets 自动生成配置
+flutter_gen:
+  output: lib/generated/ # 输出目录
+  line_length: 80 # 行长度
+
+  # 集成配置
+  integrations:
+    flutter_svg: false # 如果使用 SVG 可开启
+    flare_flutter: false
+
+  # 颜色配置
+  colors:
+    inputs:
+      - assets/colors/colors.xml # 如果有颜色配置文件
+
+# Assets 配置示例（取消注释后使用）
+# flutter:
+#   assets:
+#     - assets/images/
+#     - assets/icons/

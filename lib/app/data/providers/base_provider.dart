@@ -49,8 +49,9 @@ class BaseProvider extends GetConnect {
       // 处理其他 HTTP 错误状态码
       if (response.statusCode != null &&
           (response.statusCode! < 200 || response.statusCode! >= 300)) {
-        final message =
-            NetworkExceptionHandler.handleStatusCode(response.statusCode!);
+        final message = NetworkExceptionHandler.handleStatusCode(
+          response.statusCode!,
+        );
         AppToast.show(message);
       }
 

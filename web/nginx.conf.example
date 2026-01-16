@@ -1,0 +1,41 @@
+server {
+    listen 80;
+    server_name your-domain.com;
+    
+    # 强制 HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
+    
+    # SSL 证书配置（替换为实际路径）
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+    
+    root /var/www/html;
+    index index.html;
+    
+    # Service Worker 不缓存
+    location ~ /flutter_service_worker\.js$ {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Pragma "no-cache";
+        add_header Expires 0;
+    }
+    
+    # 静态资源缓存
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # 单页应用路由
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    # Gzip 压缩
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
+}
