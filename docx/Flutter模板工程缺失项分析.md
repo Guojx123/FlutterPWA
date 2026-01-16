@@ -13,6 +13,9 @@
 - ✅ 全局服务（StorageService、AuthService、ThemeService）
 - ✅ 国际化基础框架（AppTranslations）
 - ✅ 基础网络层（BaseProvider）
+- ✅ **网络拦截器完善**（Token 自动注入、401 拦截、错误处理）
+- ✅ **ApiResponse 统一响应模型**
+- ✅ **Logger 日志系统**
 
 ### 1.2 通用组件
 
@@ -21,12 +24,289 @@
 - ✅ AppButton
 - ✅ AppTextField
 - ✅ AppBadge
+- ✅ **EmptyWidget**（空状态）
+- ✅ **ErrorWidget**（错误页）
+- ✅ **LoadingWidget**（加载中）
+
+### 1.3 数据层
+
+- ✅ **Models 层基础模型**（UserModel、ApiResponse、PaginationModel、BaseModel）
+- ✅ **Repository 缓存策略**（UserRepository 示例）
+- ✅ **网络异常处理工具类**（NetworkExceptionHandler）
+
+### 1.4 UI 反馈系统
+
+- ✅ **Toast/Loading/Dialog 系统**（基于 flutter_smart_dialog）
 
 ---
 
-## 二、核心缺失项（高优先级）
+## 二、已完成开发项
 
-### 2.1 数据模型层（Models）
+### ✅ P0 高优先级（已完成）
+
+1. **网络层拦截器完善** `lib/app/data/providers/base_provider.dart`
+
+   - Token 自动注入
+   - 401 拦截与自动登出跳转
+   - HTTP 状态码统一处理
+   - 业务错误码拦截
+   - 请求/响应日志输出
+   - 统一错误处理方法 `handleRequest()`
+
+2. **Toast/Loading/Dialog 系统** `lib/common/utils/app_toast.dart`
+
+   - 集成 `flutter_smart_dialog: ^4.9.0`
+   - `show()` / `success()` / `error()` 提示
+   - `showLoading()` / `dismissLoading()` 加载蒙层
+   - `confirm()` 确认对话框
+   - `showCustomDialog()` 自定义对话框
+
+3. **ApiResponse 统一响应模型** `lib/app/data/models/api_response.dart`
+   - 泛型支持
+   - `success` / `isUnauthorized` 快捷判断
+   - `fromJson()` / `toJson()` 序列化支持
+
+### ✅ P1 次优先级（已完成）
+
+4. **Logger 日志系统** `lib/common/utils/logger.dart`
+
+   - 集成 `logger: ^2.0.0`
+   - `d()` / `i()` / `w()` / `e()` / `f()` 分级日志
+   - 彩色输出、堆栈追踪
+
+5. **Models 层基础模型**
+
+   - `lib/app/data/models/base_model.dart` - 基础接口
+   - `lib/app/data/models/user_model.dart` - 用户模型示例
+   - `lib/app/data/models/pagination_model.dart` - 分页模型
+   - `lib/app/data/models/api_response.dart` - 响应包装
+
+6. **Repository 缓存策略** `lib/app/data/repositories/user_repository.dart`
+
+   - 缓存优先策略
+   - 网络失败降级缓存
+   - 示例：`getProfile()` 实现
+
+7. **空状态/错误页组件**
+   - `lib/common/widgets/empty_widget.dart` - 空列表占位
+   - `lib/common/widgets/error_widget.dart` - 错误状态
+   - `lib/common/widgets/loading_widget.dart` - 加载中
+
+### ✅ 工具类补充
+
+8. **网络异常处理** `lib/common/utils/network_exception_handler.dart`
+
+   - `handleException()` - 异常类型转换
+   - `handleStatusCode()` - HTTP 状态码友好提示
+
+9. **StorageService 增强** `lib/app/data/services/storage_service.dart`
+
+   - 新增通用方法：`get<T>()` / `set()` / `remove()` / `clear()` / `hasKey()`
+
+10. **依赖更新** `pubspec.yaml`
+    - 新增 `flutter_smart_dialog: ^4.9.0`
+    - 新增 `logger: ^2.0.0`
+
+---
+
+## 三、剩余待开发项（中低优先级）
+
+---
+
+## 三、剩余待开发项（中低优先级）
+
+### 3.1 下拉刷新 & 上拉加载（P2）
+
+**缺失位置**：
+
+- `HomeView`、`DiscoverView` 等列表页无刷新组件
+- 无分页加载状态管理
+
+**建议方案**：
+集成 `pull_to_refresh: ^2.0.0` 或使用 GetX 内置 `Obx` + `RefreshController`。
+
+---
+
+### 3.2 图片缓存与优化（P2）
+
+**建议依赖**：
+
+```yaml
+dependencies:
+  cached_network_image: ^3.3.0 # 网络图片缓存
+```
+
+**封装示例**：
+
+```dart
+// lib/common/widgets/app_image.dart
+class AppImage extends StatelessWidget {
+  final String url;
+  final double? width, height;
+  final BoxFit fit;
+
+  const AppImage(this.url, {this.width, this.height, this.fit = BoxFit.cover, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      width: width,
+      height: height,
+      fit: fit,
+      placeholder: (_, __) => Container(color: Colors.grey[200]),
+      errorWidget: (_, __, ___) => const Icon(Icons.broken_image),
+    );
+  }
+}
+```
+
+---
+
+### 3.3 资源文件自动化（P2）
+
+**建议方案**：
+
+```yaml
+dev_dependencies:
+  flutter_gen: ^5.4.0 # 自动生成 Assets 常量类
+```
+
+配置后自动生成：
+
+```dart
+// generated/assets.gen.dart
+class Assets {
+  static const String imagesLogo = 'assets/images/logo.png';
+}
+```
+
+---
+
+### 3.4 代码生成（JSON 序列化）（P2）
+
+**建议依赖**：
+
+```yaml
+dependencies:
+  json_annotation: ^4.8.0
+
+dev_dependencies:
+  build_runner: ^2.4.0
+  json_serializable: ^6.7.0
+```
+
+**使用方式**：
+
+```dart
+import 'package:json_annotation/json_annotation.dart';
+part 'user_model.g.dart';
+
+@JsonSerializable()
+class UserModel {
+  final int id;
+  final String name;
+
+  UserModel({required this.id, required this.name});
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
+}
+```
+
+---
+
+### 3.5 屏幕适配（P3）
+
+**可选方案**：
+
+```yaml
+dependencies:
+  flutter_screenutil: ^5.9.0 # 基于设计稿尺寸适配
+```
+
+或继续使用 GetX 的 `Get.width`/`Get.height` + `LayoutBuilder` 方案。
+
+---
+
+### 3.6 埋点与统计（P3）
+
+**建议实现**：
+
+```
+lib/common/utils/
+└── analytics_service.dart  # 集成 Firebase Analytics 或自定义埋点
+```
+
+---
+
+### 3.7 单元测试框架（P3）
+
+**当前问题**：
+
+- 无任何测试文件
+- 缺少 `test/` 目录结构
+
+**建议补充**：
+
+```
+test/
+├── unit/
+│   ├── services/
+│   │   └── auth_service_test.dart
+│   └── utils/
+│       └── validator_test.dart
+├── widget/
+│   └── app_button_test.dart
+└── integration/
+    └── login_flow_test.dart
+```
+
+---
+
+### 3.8 混淆与加固（P3）
+
+**Android**：
+
+```gradle
+// android/app/build.gradle
+buildTypes {
+    release {
+        minifyEnabled true
+        shrinkResources true
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+}
+```
+
+---
+
+### 3.9 敏感信息加密（P3）
+
+**建议方案**：
+
+- Token 存储使用 `flutter_secure_storage`（iOS Keychain / Android Keystore）
+- 或对 `GetStorage` 存储内容 AES 加密
+
+---
+
+### 3.10 网络安全（P3）
+
+**缺失项**：
+
+- 无证书绑定（Certificate Pinning）
+- 无 API 签名校验
+
+**建议依赖**：
+
+```yaml
+dependencies:
+  dio: ^5.0.0 # 更强大的网络库，支持证书校验
+```
+
+---
+
+## 四、优先级总结
 
 **缺失内容**：
 
@@ -451,7 +731,27 @@ dependencies:
 
 ---
 
-## 六、优先级总结
+## 四、优先级总结
+
+| 优先级 | 功能项                         | 状态      | 实现位置/说明                                          |
+| ------ | ------------------------------ | --------- | ------------------------------------------------------ |
+| **P0** | 网络层拦截器完善               | ✅ 已完成 | `lib/app/data/providers/base_provider.dart`            |
+| **P0** | Toast/Loading/Dialog           | ✅ 已完成 | `lib/common/utils/app_toast.dart`                      |
+| **P0** | ApiResponse 统一响应模型       | ✅ 已完成 | `lib/app/data/models/api_response.dart`                |
+| **P1** | Models + JSON 序列化           | ✅ 已完成 | `lib/app/data/models/*.dart`                           |
+| **P1** | Repository 缓存策略            | ✅ 已完成 | `lib/app/data/repositories/user_repository.dart`       |
+| **P1** | 空状态/错误页组件              | ✅ 已完成 | `lib/common/widgets/{empty,error,loading}_widget.dart` |
+| **P1** | Logger 日志系统                | ✅ 已完成 | `lib/common/utils/logger.dart`                         |
+| **P2** | 下拉刷新/上拉加载              | 🔲 待开发 | 建议集成 `pull_to_refresh: ^2.0.0`                     |
+| **P2** | 图片缓存（CachedNetworkImage） | 🔲 待开发 | 建议封装 `AppImage` 组件                               |
+| **P2** | Assets 自动化（flutter_gen）   | 🔲 待开发 | 配置 `flutter_gen: ^5.4.0`                             |
+| **P3** | 屏幕适配（flutter_screenutil） | 🔲 待开发 | 可选，或继续使用 GetX                                  |
+| **P3** | 单元测试框架搭建               | 🔲 待开发 | 需创建 `test/` 目录                                    |
+| **P3** | 代码混淆与安全加固             | 🔲 待开发 | Android proguard / iOS 加固                            |
+
+---
+
+## 五、快速落地建议
 
 | 优先级 | 缺失项                         | 预估工作量 |
 | ------ | ------------------------------ | ---------- |
@@ -471,7 +771,32 @@ dependencies:
 
 ---
 
-## 七、快速落地建议
+## 五、快速落地建议
+
+### ✅ 第一阶段（基础可用）- 已完成
+
+1. ✅ 完善网络层拦截器（Token、401 处理）
+2. ✅ 实现全局 Toast/Loading
+3. ✅ 增加 ApiResponse 模型
+4. ✅ 补充 Logger 日志
+
+### ✅ 第二阶段（生产可用）- 已完成
+
+1. ✅ 完整的 Models 层 + JSON 序列化
+2. ✅ Repository 缓存策略
+3. ✅ 空状态/错误页
+4. 🔲 下拉刷新/上拉加载（待补充）
+
+### 🔲 第三阶段（工程化）- 进行中
+
+1. 资源文件自动化
+2. 单元测试覆盖
+3. 性能监控与埋点
+4. 安全加固（混淆/证书绑定）
+
+---
+
+## 六、附录：当前依赖清单
 
 ### 第一阶段（基础可用）：
 
@@ -496,7 +821,121 @@ dependencies:
 
 ---
 
-## 八、附录：推荐依赖清单
+## 六、附录：当前依赖清单
+
+### 已集成依赖
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 核心框架
+  get: ^4.6.6
+  get_storage: ^2.1.1
+
+  # UI 增强
+  flutter_smart_dialog: ^4.9.0 # Toast/Loading/Dialog
+  cupertino_icons: ^1.0.8
+
+  # 工具
+  logger: ^2.0.0 # 日志系统
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+```
+
+### 推荐补充依赖（按需）
+
+```yaml
+dependencies:
+  # 网络（可选，替代 GetConnect）
+  dio: ^5.4.0
+
+  # UI 增强
+  cached_network_image: ^3.3.0 # 图片缓存
+  pull_to_refresh: ^2.0.0 # 下拉刷新
+
+  # 工具
+  flutter_screenutil: ^5.9.0 # 屏幕适配（可选）
+
+  # 安全
+  flutter_secure_storage: ^9.0.0 # 敏感数据加密存储
+
+  # 序列化
+  json_annotation: ^4.8.0
+
+dev_dependencies:
+  # 代码生成
+  build_runner: ^2.4.0
+  json_serializable: ^6.7.0
+  flutter_gen: ^5.4.0 # 资源文件自动化
+
+  # 测试
+  mockito: ^5.4.0 # Mock 依赖
+  integration_test:
+    sdk: flutter
+```
+
+---
+
+## 七、开发日志
+
+### 2026-01-16 第一阶段完成
+
+**已完成功能**：
+
+1. ✅ 网络层 BaseProvider 完善（Token 注入、401 拦截、错误处理）
+2. ✅ Toast/Loading/Dialog 系统（基于 flutter_smart_dialog）
+3. ✅ ApiResponse 统一响应模型
+4. ✅ Logger 日志系统（基于 logger 包）
+5. ✅ Models 层基础模型（UserModel、PaginationModel、BaseModel）
+6. ✅ Repository 缓存策略（UserRepository 示例）
+7. ✅ 空状态/错误页/加载中组件
+8. ✅ NetworkExceptionHandler 网络异常处理
+9. ✅ StorageService 增强（新增通用方法）
+10. ✅ main.dart 集成 SmartDialog 和 Logger
+
+**新增文件清单**：
+
+- `lib/app/data/models/api_response.dart`
+- `lib/app/data/models/base_model.dart`
+- `lib/app/data/models/user_model.dart`
+- `lib/app/data/models/pagination_model.dart`
+- `lib/app/data/providers/user_provider.dart`
+- `lib/app/data/repositories/user_repository.dart`
+- `lib/common/utils/logger.dart`
+- `lib/common/utils/network_exception_handler.dart`
+- `lib/common/widgets/empty_widget.dart`
+- `lib/common/widgets/error_widget.dart`
+- `lib/common/widgets/loading_widget.dart`
+
+**修改文件清单**：
+
+- `pubspec.yaml` - 新增依赖：`flutter_smart_dialog: ^4.9.0`、`logger: ^2.0.0`
+- `lib/main.dart` - 集成 SmartDialog、替换 debugPrint 为 AppLogger
+- `lib/common/utils/app_toast.dart` - 替换为 SmartDialog 实现
+- `lib/app/data/providers/base_provider.dart` - 完善拦截器与错误处理
+- `lib/app/data/services/storage_service.dart` - 新增通用存储方法
+
+**测试状态**：
+
+- 依赖安装：✅ 成功
+- Linter 检查：✅ 无错误
+
+**下一步计划**：
+
+1. 运行项目验证启动流程
+2. 根据实际业务需求补充下拉刷新/上拉加载组件
+3. 考虑引入 `cached_network_image` 进行图片优化
+
+---
+
+**文档生成时间**：2026-01-16  
+**适用模板版本**：v1.1.0  
+**维护人员**：请根据实际业务需求调整优先级
 
 ```yaml
 dependencies:

@@ -16,6 +16,7 @@ class StorageService extends GetxService {
     return this;
   }
 
+  // Token 相关
   String? get token => _box.read<String>(_tokenKey);
   Future<void> setToken(String? value) async {
     if (value == null || value.isEmpty) {
@@ -25,6 +26,7 @@ class StorageService extends GetxService {
     await _box.write(_tokenKey, value);
   }
 
+  // Locale 相关
   Locale? get locale {
     final value = _box.read<String>(_localeKey);
     if (value == null || value.isEmpty) return null;
@@ -45,6 +47,7 @@ class StorageService extends GetxService {
     await _box.write(_localeKey, code);
   }
 
+  // ThemeMode 相关
   String? get themeMode => _box.read<String>(_themeKey);
   Future<void> setThemeMode(String? value) async {
     if (value == null || value.isEmpty) {
@@ -53,4 +56,21 @@ class StorageService extends GetxService {
     }
     await _box.write(_themeKey, value);
   }
+
+  // 通用方法
+  T? get<T>(String key) => _box.read<T>(key);
+
+  Future<void> set(String key, dynamic value) async {
+    await _box.write(key, value);
+  }
+
+  Future<void> remove(String key) async {
+    await _box.remove(key);
+  }
+
+  Future<void> clear() async {
+    await _box.erase();
+  }
+
+  bool hasKey(String key) => _box.hasData(key);
 }

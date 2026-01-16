@@ -1,75 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
+/// 统一 Toast/Loading/Dialog 工具类
 class AppToast {
-  static bool _loadingShown = false;
-
+  /// 显示普通提示
   static void show(String message) {
     if (message.isEmpty) return;
-    Get.snackbar(
-      '',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      titleText: const SizedBox.shrink(),
-      margin: const EdgeInsets.all(16),
-    );
+    SmartDialog.showToast(message);
   }
 
+  /// 显示成功提示
+  static void success(String message) {
+    if (message.isEmpty) return;
+    SmartDialog.showToast(message, displayType: SmartToastType.last);
+  }
+
+  /// 显示错误提示
+  static void error(String message) {
+    if (message.isEmpty) return;
+    SmartDialog.showToast(message, displayType: SmartToastType.last);
+  }
+
+  /// 显示 Loading
   static void showLoading([String? message]) {
-    if (_loadingShown || Get.isDialogOpen == true) return;
-    _loadingShown = true;
-    Get.dialog(
-      PopScope(
-        canPop: false,
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.black87,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                ),
-                if (message != null) ...[
-                  const SizedBox(width: 12),
-                  Text(message, style: const TextStyle(color: Colors.white)),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    ).whenComplete(() => _loadingShown = false);
+    SmartDialog.showLoading(msg: message ?? '加载中...');
   }
 
+  /// 关闭 Loading
   static void dismissLoading() {
-    if (Get.isDialogOpen == true) {
-      Get.back();
-    }
+    SmartDialog.dismiss(status: SmartStatus.loading);
   }
 
-  static Future<void> confirm({
+  /// 显示确认对话框
+  static Future<bool> confirm({
     required String title,
     required String content,
-    required VoidCallback onConfirm,
+    String? cancelText,
+    String? confirmText,
   }) async {
-    await Get.defaultDialog(
-      title: title,
-      middleText: content,
-      onConfirm: onConfirm,
-      onCancel: () {},
-      textConfirm: '确定',
-      textCancel: '取消',
+    final result = await SmartDialog.show<bool>(
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () => SmartDialog.dismiss(result: false),
+              child: Text(cancelText ?? '取消'),
+            ),
+            TextButton(
+              onPressed: () => SmartDialog.dismiss(result: true),
+              child: Text(confirmText ?? '确认'),
+            ),
+          ],
+        );
+      },
+    );
+    return result ?? false;
+  }
+
+  /// 显示自定义对话框
+  static Future<T?> showCustomDialog<T>({
+    required Widget child,
+    bool barrierDismissible = true,
+  }) async {
+    return await SmartDialog.show<T>(
+      builder: (_) => child,
+      clickMaskDismiss: barrierDismissible,
     );
   }
 }

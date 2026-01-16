@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'app/data/services/storage_service.dart';
@@ -8,6 +9,7 @@ import 'app/data/services/theme_service.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'common/i18n/app_translations.dart';
+import 'common/utils/logger.dart';
 
 Future<void> main() async {
   runZonedGuarded(
@@ -20,7 +22,7 @@ Future<void> main() async {
       runApp(const MyApp());
     },
     (error, stack) {
-      debugPrint('Global Error: $error\n$stack');
+      AppLogger.e('Global Error', error, stack);
     },
   );
 }
@@ -50,6 +52,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.light,
+      // 集成 SmartDialog
+      navigatorObservers: [FlutterSmartDialog.observer],
+      builder: FlutterSmartDialog.init(),
     );
   }
 }
