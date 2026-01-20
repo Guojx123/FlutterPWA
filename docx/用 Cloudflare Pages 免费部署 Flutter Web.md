@@ -279,16 +279,203 @@ Cloudflare Pages 默认是静态站
 
 ---
 
-## 十一、你现在已经做到什么程度？
+## 十一、持续部署（自动化更新）
 
-✔️ Flutter Web
-✔️ 免费部署
-✔️ HTTPS
-✔️ 可安装 App
-✔️ 不用上架
-✔️ 不花钱
+> **核心概念**：一旦配置好，每次 `git push` 后 Cloudflare Pages 自动构建并部署新版本。
 
-**这已经超过 80% Flutter 开发者能做到的程度。**
+---
+
+### 工作原理
+
+```
+本地修改代码
+    ↓
+git push 到 GitHub
+    ↓
+Cloudflare Pages 自动检测
+    ↓
+自动构建 Flutter Web
+    ↓
+自动部署到 pages.dev
+    ↓
+用户访问到最新版本
+```
+
+---
+
+### 实操流程（完整演示）
+
+#### 1️⃣ 修改代码
+
+例如，修改 `lib/main.dart` 中的文本：
+
+```dart
+Text('Hello World v2.0'), // 从 v1.0 改成 v2.0
+```
+
+---
+
+#### 2️⃣ 提交并推送
+
+```bash
+# 查看改动
+git status
+
+# 添加到暂存
+git add .
+
+# 提交
+git commit -m "feat: 更新首页文案到 v2.0"
+
+# 推送到 GitHub
+git push
+```
+
+---
+
+#### 3️⃣ Cloudflare Pages 自动构建
+
+推送后：
+
+1. 打开 Cloudflare Pages 控制台
+2. 进入你的项目
+3. 看到 **Deployments** 标签页
+4. 会有一条新的构建记录，状态：**Building...**
+
+---
+
+#### 4️⃣ 等待构建完成
+
+- 时间：3-5 分钟
+- 状态变为：**Success**
+- 自动部署到 `https://xxxx.pages.dev`
+
+---
+
+#### 5️⃣ 验证更新
+
+```bash
+# 在浏览器打开（强制刷新）
+# Chrome: Ctrl/Cmd + Shift + R
+# Safari: Cmd + Option + E
+```
+
+或者**清除 Service Worker 缓存**（PWA 需要）：
+
+1. Chrome DevTools → Application
+2. Service Workers → Unregister
+3. 刷新页面
+
+---
+
+### 分支部署（进阶）
+
+Cloudflare Pages 支持多分支部署：
+
+| 分支         | 部署地址                              | 用途         |
+| ------------ | ------------------------------------- | ------------ |
+| main/master  | `https://xxxx.pages.dev`              | 生产环境     |
+| develop      | `https://develop.xxxx.pages.dev`      | 测试环境     |
+| feature/xxx  | `https://feature-xxx.xxxx.pages.dev`  | 功能预览     |
+
+**自动规则**：
+
+- 推送到 `main` → 自动部署生产环境
+- 推送到其他分支 → 自动生成预览链接
+
+---
+
+### 配置生产分支（可选）
+
+在 Cloudflare Pages 控制台：
+
+1. 进入项目 Settings
+2. Builds & deployments
+3. Production branch：选择 `main`（或 `master`）
+4. Preview branches：选择 `All branches`
+
+---
+
+### 回滚到上一版本
+
+如果新版本有问题：
+
+1. Cloudflare Pages → Deployments
+2. 找到上一个成功的部署
+3. 点击右侧 **⋯**
+4. 选择 **Rollback to this deployment**
+
+或者用 Git 回滚：
+
+```bash
+# 回退到上一个提交
+git revert HEAD
+
+# 推送
+git push
+```
+
+---
+
+### 部署通知（可选）
+
+在 Cloudflare Pages 设置 Webhook：
+
+1. Settings → Notifications
+2. Add webhook
+3. 选择事件：
+   - Deployment started
+   - Deployment succeeded
+   - Deployment failed
+4. 输入 Webhook URL（如 Slack / Discord）
+
+---
+
+### 常见问题
+
+#### ❓ 推送后没有自动构建？
+
+**检查**：
+
+1. GitHub 仓库是否已授权 Cloudflare Pages
+2. 推送的分支是否在 Cloudflare Pages 监听范围内
+3. Cloudflare Pages 项目是否已暂停
+
+---
+
+#### ❓ 构建失败怎么办？
+
+**解决步骤**：
+
+1. Cloudflare Pages → 点击失败的部署
+2. 查看 Build logs
+3. 定位错误（通常是 Flutter 版本不匹配或依赖问题）
+4. 修复后重新推送
+
+---
+
+#### ❓ 如何加快构建速度？
+
+**优化方法**：
+
+1. 使用固定 Flutter 版本（避免每次下载）
+2. 启用 Cloudflare Pages 缓存（默认开启）
+3. 减少不必要的依赖
+
+---
+
+## 十二、你现在已经做到什么程度？
+
+✔️ Flutter Web  
+✔️ 免费部署  
+✔️ HTTPS  
+✔️ 可安装 PWA  
+✔️ 自动持续部署（CI/CD）  
+✔️ 多分支预览  
+✔️ 不用上架  
+✔️ 零成本
+
+**这已经超过 90% Flutter 开发者能做到的程度。**
 
 ---
 

@@ -40,7 +40,7 @@ class MainView extends GetView<MainController> {
           onTap: controller.onTap,
           items: [
             BottomNavigationBarItem(
-              icon: AppBadge(count: 2, child: const Icon(Icons.home)),
+              icon: AppBadge(count: 0, child: const Icon(Icons.home)),
               label: TrKeys.tabHome.tr,
             ),
             BottomNavigationBarItem(
@@ -48,7 +48,7 @@ class MainView extends GetView<MainController> {
               label: TrKeys.tabDiscover.tr,
             ),
             BottomNavigationBarItem(
-              icon: AppBadge(count: 8, child: const Icon(Icons.person)),
+              icon: AppBadge(count: 0, child: const Icon(Icons.person)),
               label: TrKeys.tabProfile.tr,
             ),
           ],
