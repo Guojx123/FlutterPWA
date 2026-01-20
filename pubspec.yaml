@@ -50,6 +50,11 @@ dependencies:
   # 序列化
   json_annotation: ^4.8.0
 
+  font_awesome_flutter:
+  flutter_linkify:
+  url_launcher:
+  shared_preferences:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

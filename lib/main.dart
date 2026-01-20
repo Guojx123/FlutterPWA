@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:template/common/widgets/resume_theme.dart' show ResumeTheme;
 import 'app/data/services/storage_service.dart';
 import 'app/data/services/auth_service.dart';
 import 'app/data/services/theme_service.dart';
@@ -40,10 +41,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('zh', 'CN'),
       initialRoute: Routes.splash,
       getPages: AppPages.pages,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: ResumeTheme.current(),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
