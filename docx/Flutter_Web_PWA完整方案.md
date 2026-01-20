@@ -238,33 +238,163 @@ self.addEventListener("fetch", (event) => {
 
 ---
 
-### Step 5：部署（必须 HTTPS）
+### Step 5：部署到 Cloudflare Pages（免费 + HTTPS）
 
-#### 推荐部署平台
+> **目标**：把 Flutter Web 部署到 Cloudflare Pages，手机可以直接安装 PWA。
 
-| 平台         | 特点                | 适用场景   |
-| ------------ | ------------------- | ---------- |
-| Vercel       | 零配置，自动 HTTPS  | 个人项目   |
-| Netlify      | 拖拽部署，免费 SSL  | 快速验证   |
-| GitHub Pages | 免费，集成 CI/CD    | 开源项目   |
-| Firebase     | Google 官方，CDN 快 | 国际化产品 |
-| Cloudflare   | 全球 CDN，免费      | 高性能需求 |
+#### 前置准备
 
-#### 部署步骤（以 Vercel 为例）
+- ✅ Flutter 项目已构建（`flutter build web`）
+- ✅ GitHub 账号
+- ✅ 能访问 Cloudflare
+
+---
+
+#### 5.1 确认 Flutter 项目支持 Web
 
 ```bash
-# 1. 安装 Vercel CLI
-npm i -g vercel
-
-# 2. 构建 Flutter Web
-flutter build web
-
-# 3. 部署
-cd build/web
-vercel --prod
+flutter devices
 ```
 
-⚠️ **没有 HTTPS → 无法安装 PWA**
+如果看到 `Chrome` 和 `Web Server`，说明已启用。
+
+如果没有，执行：
+
+```bash
+flutter config --enable-web
+```
+
+---
+
+#### 5.2 检查 / 修改 PWA 配置（关键）
+
+**编辑 `web/manifest.json`**：
+
+```json
+{
+  "name": "My Flutter App",
+  "short_name": "MyApp",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+```
+
+📌 **重点**：`start_url: "."` 对 Cloudflare Pages 必需。
+
+**确认图标存在**：
+
+```text
+web/icons/Icon-192.png
+web/icons/Icon-512.png
+```
+
+**重新构建**：
+
+```bash
+flutter build web
+```
+
+---
+
+#### 5.3 推送到 GitHub
+
+```bash
+git init
+git add .
+git commit -m "init flutter web pwa"
+git remote add origin https://github.com/你的用户名/你的仓库名.git
+git push -u origin main
+```
+
+---
+
+#### 5.4 在 Cloudflare Pages 创建项目
+
+1. 打开 [https://pages.cloudflare.com/](https://pages.cloudflare.com/)
+2. 登录 Cloudflare（用邮箱即可）
+3. 点击 **Create a project**
+4. 选择 **Connect to Git**
+5. 授权 GitHub
+6. 选择你的 Flutter 项目仓库
+
+---
+
+#### 5.5 构建配置（重点）
+
+在设置页面填写：
+
+**Framework preset**：
+
+```
+None
+```
+
+**Build command**（完整命令，直接复制）：
+
+```bash
+git clone https://github.com/flutter/flutter.git -b stable &&
+export PATH="$PATH:`pwd`/flutter/bin" &&
+flutter doctor &&
+flutter build web
+```
+
+**Output directory**：
+
+```
+build/web
+```
+
+给 Cloudflare Pages 安装 Flutter（关键步骤）
+在 **Build settings → Environment variables** 添加：
+
+| Key             | Value  |
+| --------------- | ------ |
+| FLUTTER_VERSION | 3.19.0（或你本地版本） |
+
+---
+
+#### 5.6 部署并等待完成
+
+点击 **Save and Deploy**
+
+- 第一次构建：3-5 分钟
+- 成功后得到地址：`https://xxxx.pages.dev`
+
+⚠️ **没有 HTTPS → 无法安装 PWA**（Cloudflare Pages 自动提供 HTTPS）
+
+---
+
+#### 5.7 解决单页应用 404 问题（可选但推荐）
+
+如果使用路由，需要创建 `web/_redirects` 文件：
+
+```text
+/* /index.html 200
+```
+
+然后重新构建并推送：
+
+```bash
+flutter build web
+git add .
+git commit -m "add redirects"
+git push
+```
 
 ---
 
@@ -488,25 +618,92 @@ Flutter + 原生混合开发
 
 ---
 
-## 十一、一句话总结
+### Q7：没有「安装 App」按钮？
 
-> **Flutter Web + PWA = Flutter 开发者最快的"免上架 App"方案。**
+**检查**：
+
+- HTTPS 是否启用 ✔️
+- `manifest.json` 是否生效
+- `display: standalone` 是否配置
+- 图标路径是否 404
+
+**解决**：打开 Chrome DevTools → Application → Manifest，查看错误提示。
 
 ---
 
-## 十二、相关资源
+### Q8：页面刷新后 404？
+
+**原因**：Cloudflare Pages 默认是静态站，不支持单页应用路由。
+
+**解决**：创建 `web/_redirects` 文件：
+
+```text
+/* /index.html 200
+```
+
+重新构建并推送。
+
+---
+
+### Q9：Cloudflare Pages 构建失败？
+
+**常见原因**：
+
+1. Build command 未正确配置 Flutter SDK
+2. Output directory 设置错误（应为 `build/web`）
+3. Flutter 版本不兼容
+
+**解决**：检查构建日志，确认 Flutter 安装成功。
+
+---
+
+### Q10：iOS Safari 安装后无法全屏？
+
+**检查 `web/index.html`**：
+
+```html
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+```
+
+重新构建并部署。
+
+---
+
+## 十一、你现在已经做到什么程度？
+
+✔️ Flutter Web  
+✔️ 免费部署（Cloudflare Pages）  
+✔️ HTTPS（自动）  
+✔️ 可安装 PWA  
+✔️ 不用上架应用商店  
+✔️ 零成本分发
+
+**这已经超过 80% Flutter 开发者能做到的程度。**
+
+---
+
+## 十二、一句话总结
+
+> **Flutter Web + PWA + Cloudflare Pages = Flutter 开发者最快的"免上架 App"方案。**
+
+---
+
+## 十三、相关资源
 
 ### 官方文档
 
 - [Flutter Web 官方文档](https://docs.flutter.dev/platform-integration/web)
 - [PWA 官方指南](https://web.dev/progressive-web-apps/)
 - [Manifest 规范](https://developer.mozilla.org/en-US/docs/Web/Manifest)
+- [Cloudflare Pages 文档](https://developers.cloudflare.com/pages/)
 
 ### 工具推荐
 
 - [PWA Builder](https://www.pwabuilder.com/) - PWA 配置生成工具
 - [Lighthouse](https://developers.google.com/web/tools/lighthouse) - PWA 质量检测
 - [Web.dev](https://web.dev/measure/) - 性能测试
+- [Cloudflare Pages](https://pages.cloudflare.com/) - 免费部署平台
 
 ### 示例项目
 
@@ -515,6 +712,7 @@ Flutter + 原生混合开发
 
 ---
 
-**文档版本**：v1.0  
+**文档版本**：v2.0  
 **更新时间**：2026-01-16  
+**更新内容**：新增 Cloudflare Pages 完整部署流程，优化构建脚本以适配 Flutter 3.x  
 **维护人员**：请根据实际项目需求调整配置
