@@ -6,6 +6,10 @@ class ProfileInformation {
   final String github;
   final String stackOverFlow;
   final String contactNumber;
+  // 意向
+  final String intendedPosition;
+  // wx
+  final String wechat;
 
   ProfileInformation({
     required this.name,
@@ -15,5 +19,7 @@ class ProfileInformation {
     required this.github,
     required this.stackOverFlow,
     required this.contactNumber,
+    required this.intendedPosition,
+    required this.wechat,
   });
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:template/common/widgets/widget_index.dart';
-import 'package:template/app/data/models/model_index.dart';
 
 class ResumeFooter extends StatelessWidget {
   const ResumeFooter({super.key});

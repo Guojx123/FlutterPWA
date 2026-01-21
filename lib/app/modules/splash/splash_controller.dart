@@ -19,7 +19,6 @@ class SplashController extends GetxController {
   }
 
   Future<void> _bootstrap() async {
-    debugPrint('[Splash] _bootstrap start');
     // 模拟启动耗时
     await Future.delayed(const Duration(seconds: 1));
     await _theme.load();
@@ -28,10 +27,8 @@ class SplashController extends GetxController {
       Get.updateLocale(locale);
     }
     final isLoggedIn = _auth.isLoggedIn;
-    debugPrint('[Splash] isLoggedIn: $isLoggedIn');
-    final target = isLoggedIn ? Routes.home : Routes.login;
-    debugPrint('[Splash] navigating to: $target');
+    // final target = isLoggedIn ? Routes.home : Routes.login;
+    final target =Routes.home ;
     Get.offAllNamed(target);
-    debugPrint('[Splash] navigation triggered');
   }
 }

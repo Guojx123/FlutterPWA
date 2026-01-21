@@ -13,8 +13,7 @@ class ResumeContent {
   final List<ContentSkill> contentSkills;
   final List<ContentWorkHistory> contentWorkHistories;
   final List<ContentExperience> contentExperience;
-  final List<ContentExperience> communityWorkList;
-  final List<ContentInterest> interestList;
+
 
   ResumeContent({
     required this.profileInformation,
@@ -24,7 +23,5 @@ class ResumeContent {
     required this.contentSkills,
     required this.contentWorkHistories,
     required this.contentExperience,
-    required this.communityWorkList,
-    required this.interestList,
   });
 }

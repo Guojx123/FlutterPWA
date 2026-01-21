@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('zh', 'CN'),
       initialRoute: Routes.splash,
       getPages: AppPages.pages,
+
       theme: ResumeTheme.current(),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -50,9 +52,19 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.light,
-      // 集成 SmartDialog
+
       navigatorObservers: [FlutterSmartDialog.observer],
-      builder: FlutterSmartDialog.init(),
+
+      builder: (context, child) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
+          child: FlutterSmartDialog.init()(context, child),
+        );
+      },
     );
   }
 }

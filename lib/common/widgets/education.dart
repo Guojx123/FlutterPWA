@@ -1,90 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:template/common/widgets/widget_index.dart';
 import 'package:template/app/data/models/model_index.dart';
+import 'resume_theme.dart';
 
 class Education extends StatelessWidget {
-  final ContentEducation _contentEducation;
+  final ContentEducation content;
 
-  const Education(this._contentEducation, { super.key});
+  const Education(this.content, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.only(bottom: 0),
-//        color: Colors.black12,
-        width: double.infinity,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  color: Colors.lightGreen,
-                  width: 1,
-                  height: 50,
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: EdgeInsets.only(top: 5, bottom: 5, left: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Text(
-                          _contentEducation.type,
-                          textAlign: TextAlign.start,
-                          style: ResumeTheme.description1Text(context),
-                        ),
-                        Text(
-                          _contentEducation.year,
-                          textAlign: TextAlign.start,
-                          style: ResumeTheme.description1Text(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 7,
-                  child: Container(
-                    padding: EdgeInsets.only(top: 5, bottom: 5, left: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Text(
-                          _contentEducation.name,
-                          textAlign: TextAlign.start,
-                          style: ResumeTheme.description2Text(context),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              _contentEducation.title,
-                              textAlign: TextAlign.start,
-                              style: ResumeTheme.description2Text(context),
-                            ),
-                            Text(
-                              _contentEducation.grade,
-                              textAlign: TextAlign.start,
-                              style: ResumeTheme.description2Text(context),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+    final desc1 = ResumeTheme.description1Text(context);
+    final desc2 = ResumeTheme.description2Text(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 类型 + 年份
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              content.type,
+              style: desc1?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Divider(
-              height: 1,
-              thickness: 1,
+            Text(
+              content.year,
+              style: desc1?.copyWith(fontSize: 12, color: Colors.grey[600]),
             ),
           ],
-        ));
+        ),
+
+        const SizedBox(height: 4),
+
+        // 学校 + 专业 + 成绩
+        Text(
+          content.name,
+          style: desc2?.copyWith(fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 2),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                content.title,
+                style: desc2,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              content.grade,
+              style: desc2,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 6),
+
+        // 描述
+        if (content.description.isNotEmpty)
+          Text(
+            content.description,
+            style: desc2?.copyWith(height: 1.5, color: Colors.grey[800]),
+          ),
+
+        const SizedBox(height: 16),
+      ],
+    );
   }
 }

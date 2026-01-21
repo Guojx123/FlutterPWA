@@ -3,101 +3,97 @@ import 'package:template/common/widgets/resume_skills.dart';
 import 'package:template/common/widgets/widget_index.dart';
 import 'package:template/app/data/models/model_index.dart';
 
-
-
 class ResumeBody extends StatelessWidget {
   final ResumeContent resumeContent;
 
   const ResumeBody({
-     super.key,
+    super.key,
     required this.resumeContent,
   });
 
+  static const double _sectionSpacing = 12;
+  static const double _cardPadding = 14;
+
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-    final mQ = MediaQuery.of(context).size;
-    return Container(
-      alignment: Alignment.topLeft,
-      width: double.infinity,
-      margin: EdgeInsets.all(5),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(12),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          HeaderTitle(mTitle: TitleModel("About Me")),
+          // 自我介绍
+          HeaderTitle(mTitle: TitleModel("自我介绍")),
           _content([_paragraph(resumeContent.aboutMe, context)]),
-          HeaderTitle(mTitle: TitleModel("Education")),
-          _content(
-            [
-              for (ContentEducation eduction in resumeContent.contentEducation)
-                Education(eduction)
-            ],
-          ),
-          HeaderTitle(
-            mTitle: TitleModel("Skills"),
-          ),
+
+          SizedBox(height: _sectionSpacing),
+
+          // 工作经历
+          HeaderTitle(mTitle: TitleModel("工作经历")),
           _content([
-            for (ContentSkill skill in resumeContent.contentSkills)
-              ResumeSkills(contentSkill: skill)
-          ]),
-          HeaderTitle(
-            mTitle: TitleModel("Work History"),
-          ),
-          _content([
-            for (ContentWorkHistory workHistory
-                in resumeContent.contentWorkHistories)
+            for (final workHistory in resumeContent.contentWorkHistories)
               ResumeWorkHistory(workHistory: workHistory)
           ]),
-          HeaderTitle(
-            mTitle: TitleModel("Community Work"),
-          ),
+
+          SizedBox(height: _sectionSpacing),
+
+          // 教育经历
+          HeaderTitle(mTitle: TitleModel("教育经历")),
           _content([
-            for (ContentExperience contentExperience
-                in resumeContent.communityWorkList)
-              ResumeExperience(experience: contentExperience)
+            for (final education in resumeContent.contentEducation)
+              Education(education)
           ]),
-          HeaderTitle(
-            mTitle: TitleModel("Experience"),
-          ),
+
+          SizedBox(height: _sectionSpacing),
+
+          // 技能
+          HeaderTitle(mTitle: TitleModel("技能")),
           _content([
-            for (ContentExperience contentExperience
-                in resumeContent.contentExperience)
-              ResumeExperience(experience: contentExperience)
+            for (final skill in resumeContent.contentSkills)
+              ResumeSkills(contentSkill: skill)
           ]),
-          HeaderTitle(
-            mTitle: TitleModel("Hobbies and Interests"),
-          ),
+
+          SizedBox(height: _sectionSpacing),
+
+          // 项目经历
+          HeaderTitle(mTitle: TitleModel("项目经历")),
           _content([
-            ResumeInterest(interestList: resumeContent.interestList),
-          ]), // update hobbies and Interest with icons and description form
-          HeaderTitle(
-            mTitle: TitleModel("Reference"),
-          ),
+            for (final contentExperience in resumeContent.contentExperience)
+              ResumeExperienceCard(experience: contentExperience)
+          ]),
+
+          SizedBox(height: _sectionSpacing),
+
+          // 相关证书
+          HeaderTitle(mTitle: TitleModel("相关证书")),
           _content([_paragraph(resumeContent.reference, context)]),
         ],
       ),
     );
   }
 
+  /// 通用内容卡片
   Widget _content(List<Widget> children) {
     return Card(
-      margin: EdgeInsets.only(bottom: 5),
-      elevation: 2,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shadowColor: Colors.grey.withOpacity(0.2),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(children: children),
+        padding: const EdgeInsets.all(_cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
       ),
     );
   }
 
+  /// 段落文本
   Widget _paragraph(String text, BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Text(
-        text,
-        style: ResumeTheme.description2Text(context),
-        textAlign: TextAlign.justify,
-      ),
+    return Text(
+      text,
+      style: ResumeTheme.subTitleText(context)?.copyWith(height: 1.5),
+      textAlign: TextAlign.justify,
     );
   }
 }
