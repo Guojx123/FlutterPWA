@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       translations: AppTranslations(),
       locale: const Locale('zh', 'CN'),
       fallbackLocale: const Locale('zh', 'CN'),
-      initialRoute: Routes.main,
+      initialRoute: Routes.splash,
       getPages: AppPages.pages,
 
       theme: ResumeTheme.current(),

@@ -20,7 +20,7 @@ class SplashController extends GetxController {
 
   Future<void> _bootstrap() async {
     // 模拟启动耗时
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 250));
     await _theme.load();
     final locale = _storage.locale;
     if (locale != null) {
