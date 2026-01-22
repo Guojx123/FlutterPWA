@@ -45,7 +45,7 @@ class MustafaResumeContent {
     ContentWorkHistory(
       companyName: "广州紫鲸互联网科技有限公司",
       designation: "Flutter开发工程师",
-      duration: "2021.1 - 2021.12",
+      duration: "2020.12 - 2021.12",
       description: "1、第一批使用Flutter跨平台框架，构建Android、iOS应用并顺利上线。\n"
           "2、跟进产品新版本的需求梳理和产品设计，一个多月独自完成应用开发，满足需求快速实现、新功能上线的需求。\n"
           "3、负责公司册多多电商项目、速百读电子阅读社区等项目的开发，上线打包发版，并负责项目后期维护工作。\n",
@@ -58,28 +58,30 @@ class MustafaResumeContent {
             name: "广东海洋大学寸金学院（现湛江科技学院）",
             title: "计算机科学与技术 智能制造学院",
             grade: "3.2 CGPA",
-            year: "2016.9- 2021.12",
+            year: "2016.9- 2020.6",
             description: "湛江科技学院由原广东海洋大学寸金学院转设而成。学校创办于1999年，2006年被批准为独立学院，2011年获学士学位授予权，2013年通过广东省教育厅独立学院本科教学基本状态评估，2021年经教育部批准转设为湛江科技学院。"),
       ],
       contentSkills: [
         ContentSkill(
-          name: "Flutter",
+          name: "Dart（Flutter框架）",
           level: 0.9,
         ),
-
         ContentSkill(
-          name: "GetX",
+          name: "GetX、Bloc状态管理",
           level: 0.8,
-        ),
-        ContentSkill(
+        ),ContentSkill(
           name: "Firebase",
           level: 0.7,
         ),
         ContentSkill(
-          name: "Hive",
-          level: 0.6,
+          name: "Android（Kotlin）",
+          level: 0.5,
         ),ContentSkill(
-          name: "SwiftUI",
+          name: "iOS（Swift）",
+          level: 0.7,
+        ),
+        ContentSkill(
+          name: "CI/CD",
           level: 0.6,
         ),
       ],
