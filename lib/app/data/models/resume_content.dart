@@ -13,6 +13,8 @@ class ResumeContent {
   final List<ContentSkill> contentSkills;
   final List<ContentWorkHistory> contentWorkHistories;
   final List<ContentExperience> contentExperience;
+  // 开源项目展示
+  final List<ContentExperience> contentProjects;
 
 
   ResumeContent({
@@ -23,5 +25,6 @@ class ResumeContent {
     required this.contentSkills,
     required this.contentWorkHistories,
     required this.contentExperience,
+    required this.contentProjects,
   });
 }

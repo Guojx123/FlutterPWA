@@ -28,7 +28,7 @@ class SplashController extends GetxController {
     }
     final isLoggedIn = _auth.isLoggedIn;
     // final target = isLoggedIn ? Routes.home : Routes.login;
-    final target =Routes.home ;
+    final target =Routes.main ;
     Get.offAllNamed(target);
   }
 }

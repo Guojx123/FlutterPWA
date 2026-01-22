@@ -22,10 +22,10 @@ class AppPages {
       binding: LoginBinding(),
     ),
     GetPage(
-      name: Routes.home,
+      name: Routes.main,
       page: () => const MainView(),
       binding: MainBinding(),
-      middlewares: [AuthGuard()],
+      // middlewares: [AuthGuard()],
     ),
   ];
 }

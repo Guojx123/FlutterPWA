@@ -16,7 +16,7 @@ class LoginController extends GetxController {
     isLoading.value = true;
     await StorageService.to.setToken('demo_token');
     isLoading.value = false;
-    Get.offAllNamed(Routes.home);
+    Get.offAllNamed(Routes.main);
   }
 
   @override

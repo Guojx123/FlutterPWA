@@ -57,7 +57,7 @@ class MustafaResumeContent {
             type: "本科",
             name: "广东海洋大学寸金学院（现湛江科技学院）",
             title: "计算机科学与技术 智能制造学院",
-            grade: "2.94 CGPA",
+            grade: "3.2 CGPA",
             year: "2016.9- 2021.12",
             description: "湛江科技学院由原广东海洋大学寸金学院转设而成。学校创办于1999年，2006年被批准为独立学院，2011年获学士学位授予权，2013年通过广东省教育厅独立学院本科教学基本状态评估，2021年经教育部批准转设为湛江科技学院。"),
       ],
@@ -129,6 +129,16 @@ class MustafaResumeContent {
               '参与公司0rderPin项目客户端重构，使用SwiftUI框架，其中主要负责首页、订单模块的重构,两周时间内开发完并通过测试，两月后顺利上线。'
             ],
             link: ""),
-      ],
+
+      ],contentProjects: [
+    ContentExperience(
+        title: "问答君-自建题库、答题社区",
+        description:
+        "",
+        features: [
+          '使用Flutter开发，使用GetX框架，实现了题库、答题、社区等功能。',
+           ],
+        link: "https://github.com/Guojx123/questwer_flu"),
+  ],
       );
 }
