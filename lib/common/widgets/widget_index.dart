@@ -11,3 +11,4 @@ export 'header_bg_dark.dart';
 export 'header_bg_light.dart';
 export 'footer_bg_dark.dart';
 export 'footer_bg_light.dart';
+export 'blurred_text.dart';

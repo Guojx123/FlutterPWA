@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:template/app/data/models/content_work_history.dart';
+import 'package:template/common/widgets/widget_index.dart';
 import 'resume_theme.dart';
 
 class ResumeWorkHistory extends StatelessWidget {
@@ -36,7 +37,7 @@ class ResumeWorkHistory extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    BlurredText(
                       workHistory.companyName,
                       style: ResumeTheme.description1Text(context)?.copyWith(
                         fontWeight: FontWeight.bold,

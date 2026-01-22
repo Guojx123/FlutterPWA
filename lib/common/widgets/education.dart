@@ -34,7 +34,7 @@ class Education extends StatelessWidget {
         const SizedBox(height: 4),
 
         // 学校 + 专业 + 成绩
-        Text(
+        BlurredText(
           content.name,
           style: desc2?.copyWith(fontWeight: FontWeight.w500),
         ),

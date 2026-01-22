@@ -53,7 +53,7 @@ class ResumeHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _AnimatedAvatarRing(theme: theme),
-                const SizedBox(width: 16),
+                const SizedBox(width: 32),
                 Expanded(
                   child: _ProfileInfo(
                     profile: profile,
@@ -182,7 +182,7 @@ class _ProfileInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(profile.name, style: ResumeTheme.titleText(context)),
+        BlurredText(profile.name, style: ResumeTheme.titleText(context)),
         const SizedBox(height: 2),
         Text(profile.designation, style: ResumeTheme.subTitleText(context)),
         const SizedBox(height: 10),
@@ -216,7 +216,7 @@ class _InfoRow extends StatelessWidget {
           Icon(icon, size: 16, color: theme.primaryColor),
           const SizedBox(width: 6),
           Expanded(
-            child: Text(
+            child: BlurredText(
               text,
               style: ResumeTheme.subTitleText(context),
               overflow: TextOverflow.ellipsis,
